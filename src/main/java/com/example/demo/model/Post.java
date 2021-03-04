@@ -53,6 +53,7 @@ public class Post {
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
 		this.username = userName;
+		
 	}
 
 	public long getId() {
