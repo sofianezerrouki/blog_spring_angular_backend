@@ -1,10 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepo;
-import com.example.demo.security.JwtProvider;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepo;
+import com.example.demo.security.JwtProvider;
 
 @Service
 public class AuthService {
@@ -58,6 +61,13 @@ public class AuthService {
 		SecurityContextHolder.getContext().setAuthentication(authentificate);
 		
 		return jwtProvider.generateToken(authentificate);
+		
+	}
+
+	public Optional<org.springframework.security.core.userdetails.User> getCurrentUser() {
+		org.springframework.security.core.userdetails.User principale =  (org.springframework.security.core.userdetails.User)  
+				SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return Optional.of(principale);
 		
 	}
 	
