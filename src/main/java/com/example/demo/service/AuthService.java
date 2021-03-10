@@ -62,6 +62,8 @@ public class AuthService {
 		
 		return jwtProvider.generateToken(authentificate);
 		
+		//return new AuthontificationResponse(jwtProvider.generateToken(authentificate),loginRequest.getUsername());
+		
 	}
 
 	public Optional<org.springframework.security.core.userdetails.User> getCurrentUser() {

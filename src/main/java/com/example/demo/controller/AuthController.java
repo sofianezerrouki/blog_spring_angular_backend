@@ -13,6 +13,7 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.security.JwtProvider;
 import com.example.demo.service.AuthService;
+import com.example.demo.service.AuthontificationResponse;
 
 @RestController
 @RequestMapping("/api/auth")
