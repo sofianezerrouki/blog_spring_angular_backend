@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+//lombok don't work with me
 
 public class AuthontificationResponse {
 	private String authontificationToken;
