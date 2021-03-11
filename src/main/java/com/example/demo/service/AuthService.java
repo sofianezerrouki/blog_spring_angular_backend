@@ -51,7 +51,7 @@ public class AuthService {
 		
 	}
 
-	public String login(LoginRequest loginRequest) {
+	public AuthontificationResponse login(LoginRequest loginRequest) {
 
 		Authentication authentificate = 
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -59,10 +59,9 @@ public class AuthService {
 															loginRequest.getPassword())
 										   );
 		SecurityContextHolder.getContext().setAuthentication(authentificate);
+		String authontificationToken =  jwtProvider.generateToken(authentificate);
 		
-		return jwtProvider.generateToken(authentificate);
-		
-		//return new AuthontificationResponse(jwtProvider.generateToken(authentificate),loginRequest.getUsername());
+		return new AuthontificationResponse(authontificationToken,loginRequest.getUsername());
 		
 	}
 
