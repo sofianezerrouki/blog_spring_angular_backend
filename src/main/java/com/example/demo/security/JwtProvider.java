@@ -28,12 +28,12 @@ public class JwtProvider  {
 	private KeyStore keyStore;
 	
 	@PostConstruct
-	private void ini() {
+	private void init() {
 		
 		try {
 			keyStore = KeyStore.getInstance("JKS"); 
-			InputStream stream =  getClass().getResourceAsStream("springblog.jks");
-			keyStore.load(stream,"adminadmin".toCharArray());
+			InputStream stream =  getClass().getResourceAsStream("/springblog.jks");
+			keyStore.load(stream,"sofiane".toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			
 			throw new SpringBlogException("Exception occured while loadin keyStore :( ");
@@ -55,7 +55,9 @@ public class JwtProvider  {
 	private Key getPrivateKey() {
 		
 		try {
-			return (PrivateKey) keyStore.getKey("springblog","adminadmin".toCharArray());
+			return (PrivateKey) keyStore.getKey("springblog","sofiane".toCharArray());
+			
+			
 		} catch (UnrecoverableKeyException | KeyStoreException |NoSuchAlgorithmException e) {
 
 			throw new SpringBlogException("Exception occured while retreivin public key from keyStore ! ");
@@ -73,7 +75,9 @@ public class JwtProvider  {
 	private PublicKey getPublicKey() {
 
 		try {
+			
 			return keyStore.getCertificate("springblog").getPublicKey();
+		
 		} catch (KeyStoreException e) {
 
 			throw new SpringBlogException("Exception occured while retreivin public key from keyStore ! ");
@@ -89,3 +93,8 @@ public class JwtProvider  {
 		return claims.getSubject();
 	}
 }
+
+//Asymetric Encryption using java KeyStore
+//Terminal=>
+//	keytool -genkey -alias springblog -keyalg RSA -keystore springblog.jks -keysize 2048 
+// 	keytool -importkeystore -srckeystore springblog.jks -destkeystore springblog.jks -deststoretype pkcs12
