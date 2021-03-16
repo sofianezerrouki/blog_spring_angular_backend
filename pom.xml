@@ -96,6 +96,30 @@
 			<version>1.18.16</version>
 			<scope>provided</scope>
 		</dependency>
+				<!-- Add documentation for the API -->
+		<!-- springdoc-openapi -->
+		<!-- more info 
+			https://www.baeldung.com/spring-rest-openapi-documentation#settingupwithoutswagger -->
+		<!-- 
+			custom path (properties file): springdoc.api-docs.path=/api-docs
+		 -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+		
+		<!-- openapi With Swagger UI -->
+		<!--  
+			http://localhost:8080/swagger-ui.html
+			custom path : 
+				springdoc.swagger-ui.path=/swagger-ui-custom.html
+		-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.5.2</version>
+		</dependency>
 
 	
 	</dependencies>
