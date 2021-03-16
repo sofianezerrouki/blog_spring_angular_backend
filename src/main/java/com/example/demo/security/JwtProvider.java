@@ -1,97 +1,73 @@
 package com.example.demo.security;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
-import javax.annotation.PostConstruct;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.exception.SpringBlogException;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.*;
+import java.security.cert.CertificateException;
 
 @Service
-public class JwtProvider  {
-	
-	private KeyStore keyStore;
-	
-	@PostConstruct
-	private void init() {
-		
-		try {
-			keyStore = KeyStore.getInstance("JKS"); 
-			InputStream stream =  getClass().getResourceAsStream("/springblog.jks");
-			keyStore.load(stream,"sofiane".toCharArray());
-		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-			
-			throw new SpringBlogException("Exception occured while loadin keyStore :( ");
-			
-		}
+public class JwtProvider {
 
-	}
-	
-	public String generateToken(Authentication authentification) {
-		
-		User principal=(User) authentification.getPrincipal();
-		
-		return Jwts.builder()
-					.setSubject(principal.getUsername())
-					.signWith(getPrivateKey())
-					.compact();
-	}
-	
-	private Key getPrivateKey() {
-		
-		try {
-			return (PrivateKey) keyStore.getKey("springblog","sofiane".toCharArray());
-			
-			
-		} catch (UnrecoverableKeyException | KeyStoreException |NoSuchAlgorithmException e) {
+    private KeyStore keyStore;
 
-			throw new SpringBlogException("Exception occured while retreivin public key from keyStore ! ");
-			
-		}
-		
-	}
+    @PostConstruct
+    public void init() {
+        try {
+            keyStore = KeyStore.getInstance("JKS");
+            InputStream resourceAsStream = getClass().getResourceAsStream("/springblog.jks");
+            keyStore.load(resourceAsStream, "sofiane".toCharArray());
+        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
+            throw new SpringBlogException("Exception occured while loading keystore");
+        }
 
-	public boolean validateJwt(String token) {
-		Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(token);
-		
-		return true;
-	}
+    }
 
-	private PublicKey getPublicKey() {
+    public String generateToken(Authentication authentication) {
+        User principal = (User) authentication.getPrincipal();
+        return Jwts.builder()
+                .setSubject(principal.getUsername())
+                .signWith(getPrivateKey())
+                .compact();
+    }
 
-		try {
-			
-			return keyStore.getCertificate("springblog").getPublicKey();
-		
-		} catch (KeyStoreException e) {
+    private PrivateKey getPrivateKey() {
+        try {
+            return (PrivateKey) keyStore.getKey("springblog", "sofiane".toCharArray());
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
+            throw new SpringBlogException("Exception occured while retrieving public key from keystore");
+        }
+    }
 
-			throw new SpringBlogException("Exception occured while retreivin public key from keyStore ! ");
+    public boolean validateToken(String jwt) {
+        Jwts.parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
+        return true;
+    }
 
-		}
-	}
+    private PublicKey getPublickey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new SpringBlogException("Exception occured while retrieving public key from keystore");
+        }
+    }
 
-	public String getUserNameFromJwt(String token) {
-		Claims claims = Jwts.parser()
-					.setSigningKey(getPublicKey())
-					.parseClaimsJwt(token)
-					.getBody();
-		return claims.getSubject();
-	}
+    public String getUsernameFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getPublickey())
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
 }
 
 //Asymetric Encryption using java KeyStore
